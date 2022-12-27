@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"math/rand"
 	"net/http"
+	"os"
 )
 
 var qstns = map[int]string{
@@ -15,7 +16,7 @@ var qstns = map[int]string{
 	2: "2",
 }
 
-const botApi string = "5920001942:AAF7rZemD5OYdrcumZtZVlZu7fc5bkrZ-hs"
+var botToken string
 
 // Create a struct that mimics the webhook response body
 // https://core.telegram.org/bots/api#update
@@ -67,7 +68,7 @@ func sendNewQuestion(chatID int64) error {
 	}
 
 	// Send a post request with your token
-	res, err := http.Post(fmt.Sprintf("https://api.telegram.org/bot%v/sendMessage", botApi), "application/json", bytes.NewBuffer(reqBytes))
+	res, err := http.Post(fmt.Sprintf("https://api.telegram.org/bot%v/sendMessage", botToken), "application/json", bytes.NewBuffer(reqBytes))
 	if err != nil {
 		return err
 	}
@@ -80,5 +81,6 @@ func sendNewQuestion(chatID int64) error {
 
 // FInally, the main funtion starts our server on port 3000
 func main() {
+	botToken = os.Getenv("BOTTOKEN")
 	http.ListenAndServe(":3000", http.HandlerFunc(Handler))
 }
