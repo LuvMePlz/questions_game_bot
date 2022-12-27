@@ -57,6 +57,8 @@ func sendNewQuestion(chatID int64) error {
 		ChatID: chatID,
 		Text:   topics[rand.Intn(2)],
 	}
+	//fmt.Println("sending reply:", topics[rand.Intn(2)], " | random:", rand.Intn(2))
+
 	// Create the JSON body from the struct
 	reqBytes, err := json.Marshal(reqBody)
 	if err != nil {
@@ -98,7 +100,6 @@ func readTopics() {
 	var index = 0
 	for scanner.Scan() {
 		topics[index] = scanner.Text()
-		fmt.Println(scanner.Text())
 		index++
 	}
 
