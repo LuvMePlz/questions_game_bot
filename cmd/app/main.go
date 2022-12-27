@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"bytes"
 	"encoding/json"
 	"errors"
@@ -10,13 +11,8 @@ import (
 	"os"
 )
 
-var qstns = map[int]string{
-	0: "0",
-	1: "1",
-	2: "2",
-}
-
 var botToken string
+var topics map[int]string
 
 // Create a struct that mimics the webhook response body
 // https://core.telegram.org/bots/api#update
@@ -59,7 +55,7 @@ func sendNewQuestion(chatID int64) error {
 	// Create the request body struct
 	reqBody := &sendMessageReqBody{
 		ChatID: chatID,
-		Text:   qstns[rand.Intn(2)],
+		Text:   topics[rand.Intn(2)],
 	}
 	// Create the JSON body from the struct
 	reqBytes, err := json.Marshal(reqBody)
@@ -79,8 +75,34 @@ func sendNewQuestion(chatID int64) error {
 	return nil
 }
 
-// FInally, the main funtion starts our server on port 3000
 func main() {
+	readTopics()
 	botToken = os.Getenv("BOTTOKEN")
-	http.ListenAndServe(":3000", http.HandlerFunc(Handler))
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "3000"
+	}
+	http.ListenAndServe(":"+port, http.HandlerFunc(Handler))
+}
+
+func readTopics() {
+	file, err := os.Open("topics.txt")
+	if err != nil {
+		fmt.Println(err)
+	}
+	defer file.Close()
+	topics = make(map[int]string, 100)
+
+	scanner := bufio.NewScanner(file)
+
+	var index = 0
+	for scanner.Scan() {
+		topics[index] = scanner.Text()
+		fmt.Println(scanner.Text())
+		index++
+	}
+
+	if err := scanner.Err(); err != nil {
+		fmt.Println(err)
+	}
 }
