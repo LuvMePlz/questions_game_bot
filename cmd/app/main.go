@@ -100,11 +100,13 @@ func setupKeyboard() *inlineKeyboardMarkup {
 func send(chatID int64, text string, keyboard *inlineKeyboardMarkup) error {
 	// Create the request body struct
 	reqBody := &sendMessageReqBody{
-		ChatID:      chatID,
-		Text:        text,
-		ReplyMarkup: keyboard,
+		ChatID: chatID,
+		Text:   text,
 	}
 
+	if keyboard != nil {
+		reqBody.ReplyMarkup = keyboard
+	}
 	// Create the JSON body from the struct
 	reqBytes, err := json.Marshal(reqBody)
 	if err != nil {
