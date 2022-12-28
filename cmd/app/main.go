@@ -138,7 +138,7 @@ func send(chatID int64, text string, keyboard bool) error {
 func sendNewTopic(chatID int64) error {
 	var text = topics[rand.Intn(topicsCount)]
 	if err := send(chatID, text, true); err != nil {
-		fmt.Println("error in sending new topic reply command text: ", text, " | error: ", err)
+		fmt.Println("error in sending new topic reply command chatID: ", chatID, " | error: ", err)
 		return err
 	}
 
