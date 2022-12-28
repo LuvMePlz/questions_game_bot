@@ -58,12 +58,10 @@ func handler(res http.ResponseWriter, req *http.Request) {
 	var text = body.Message.Text
 	if strings.Contains(strings.ToLower(text), "/") {
 		handleCommands(body)
-	} else {
-		handleNext(body.Message.Chat.ID)
 	}
 }
 
-func handleNext(chatId int64) {
+func handleNextCommand(chatId int64) {
 	sendNewTopic(chatId)
 }
 
@@ -73,6 +71,8 @@ func handleCommands(body *webhookReqBody) {
 		handleStartCommand(body.Message.Chat.ID)
 	case "/rules":
 		handleRulesCommand(body.Message.Chat.ID)
+	case "/next":
+		handleNextCommand(body.Message.Chat.ID)
 	}
 }
 
@@ -83,7 +83,7 @@ func handleRulesCommand(chatId int64) {
 	}
 
 	// log a confirmation message if the message is sent successfully
-	fmt.Println("rules sent")
+	fmt.Println("rules sent chatid:", chatId)
 }
 
 func handleStartCommand(chatId int64) {
