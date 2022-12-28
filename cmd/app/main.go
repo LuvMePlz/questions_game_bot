@@ -13,6 +13,7 @@ import (
 
 var botToken string
 var topics map[int]string
+var topicsCount = 136
 
 // Create a struct that mimics the webhook response body
 // https://core.telegram.org/bots/api#update
@@ -55,9 +56,9 @@ func sendNewQuestion(chatID int64) error {
 	// Create the request body struct
 	reqBody := &sendMessageReqBody{
 		ChatID: chatID,
-		Text:   topics[rand.Intn(2)],
+		Text:   topics[rand.Intn(topicsCount)],
 	}
-	//fmt.Println("sending reply:", topics[rand.Intn(2)], " | random:", rand.Intn(2))
+	//fmt.Println("sending reply:", topics[rand.Intn(topicsCount)], " | random:", rand.Intn(topicsCount))
 
 	// Create the JSON body from the struct
 	reqBytes, err := json.Marshal(reqBody)
