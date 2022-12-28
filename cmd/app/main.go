@@ -87,7 +87,7 @@ func handleRulesCommand(chatId int64) {
 }
 
 func handleStartCommand(chatId int64) {
-	if err := sendKeyboard(chatId); err != nil {
+	if err := sendNewTopic(chatId); err != nil {
 		fmt.Println("error in sending keyboard reply on start command:", err)
 		return
 	}
@@ -96,17 +96,10 @@ func handleStartCommand(chatId int64) {
 	fmt.Println("keyboard sent")
 }
 
-func sendKeyboard(chatId int64) error {
-	if err := send(chatId, "next", true); err != nil {
-		return err
-	}
-	return nil
-}
-
 func setupKeyboard() *inlineKeyboardMarkup {
 
 	buttonNext := inlineKeyboardButton{
-		Text:         "next",
+		Text:         "Следующая тема",
 		CallbackData: "next",
 	}
 
@@ -143,8 +136,9 @@ func send(chatID int64, text string, keyboard bool) error {
 }
 
 func sendNewTopic(chatID int64) error {
-	if err := send(chatID, topics[rand.Intn(topicsCount)], false); err != nil {
-		fmt.Println("error in sending new topic reply command:", err)
+	var text = topics[rand.Intn(topicsCount)]
+	if err := send(chatID, text, true); err != nil {
+		fmt.Println("error in sending new topic reply command text: ", text, " | error: ", err)
 		return err
 	}
 
