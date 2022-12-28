@@ -28,6 +28,24 @@ type webhookReqBody struct {
 	} `json:"message"`
 }
 
+type inlineKeyboardMarkup struct {
+	AllButtons [][]inlineKeyboardButton `json:"inline_keyboard"`
+}
+
+type inlineKeyboardButton struct {
+	Text         string `json:"text,omitempty"`
+	CallbackData string `json:"callback_data,omitempty"`
+}
+
+// Create a struct to conform to the JSON body
+// of the send message request
+// https://core.telegram.org/bots/api#sendmessage
+type sendMessageReqBody struct {
+	ChatID      int64                 `json:"chat_id"`
+	Text        string                `json:"text"`
+	ReplyMarkup *inlineKeyboardMarkup `json:"reply_markup,omitempty"`
+}
+
 // This handler is called everytime telegram sends us a webhook event
 func handler(res http.ResponseWriter, req *http.Request) {
 	// First, decode the JSON response body
@@ -59,7 +77,7 @@ func handleCommands(body *webhookReqBody) {
 }
 
 func handleRulesCommand(chatId int64) {
-	if err := send(chatId, rules, nil); err != nil {
+	if err := send(chatId, rules, false); err != nil {
 		fmt.Println("error in sending reply on rules command:", err)
 		return
 	}
@@ -79,8 +97,7 @@ func handleStartCommand(chatId int64) {
 }
 
 func sendKeyboard(chatId int64) error {
-	var keyboard = setupKeyboard()
-	if err := send(chatId, "", keyboard); err != nil {
+	if err := send(chatId, "next", true); err != nil {
 		return err
 	}
 	return nil
@@ -89,7 +106,7 @@ func sendKeyboard(chatId int64) error {
 func setupKeyboard() *inlineKeyboardMarkup {
 
 	buttonNext := inlineKeyboardButton{
-		Text:         "Дальше",
+		Text:         "next",
 		CallbackData: "next",
 	}
 
@@ -97,15 +114,15 @@ func setupKeyboard() *inlineKeyboardMarkup {
 	return &AllButtons
 }
 
-func send(chatID int64, text string, keyboard *inlineKeyboardMarkup) error {
+func send(chatID int64, text string, keyboard bool) error {
 	// Create the request body struct
 	reqBody := &sendMessageReqBody{
 		ChatID: chatID,
 		Text:   text,
 	}
 
-	if keyboard != nil {
-		reqBody.ReplyMarkup = keyboard
+	if keyboard == true {
+		reqBody.ReplyMarkup = setupKeyboard()
 	}
 	// Create the JSON body from the struct
 	reqBytes, err := json.Marshal(reqBody)
@@ -125,27 +142,8 @@ func send(chatID int64, text string, keyboard *inlineKeyboardMarkup) error {
 	return nil
 }
 
-type inlineKeyboardMarkup struct {
-	AllButtons [][]inlineKeyboardButton `json:"inline_keyboard"`
-}
-
-type inlineKeyboardButton struct {
-	Text         string `json:"text,omitempty"`
-	CallbackData string `json:"callback_data,omitempty"`
-}
-
-// Create a struct to conform to the JSON body
-// of the send message request
-// https://core.telegram.org/bots/api#sendmessage
-
-type sendMessageReqBody struct {
-	ChatID      int64                 `json:"chat_id"`
-	Text        string                `json:"text"`
-	ReplyMarkup *inlineKeyboardMarkup `json:"reply_markup,omitempty"`
-}
-
 func sendNewTopic(chatID int64) error {
-	if err := send(chatID, topics[rand.Intn(topicsCount)], nil); err != nil {
+	if err := send(chatID, topics[rand.Intn(topicsCount)], false); err != nil {
 		fmt.Println("error in sending new topic reply command:", err)
 		return err
 	}
