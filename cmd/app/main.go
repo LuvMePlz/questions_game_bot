@@ -100,7 +100,7 @@ func setupKeyboard() *inlineKeyboardMarkup {
 
 	buttonNext := inlineKeyboardButton{
 		Text:         "Следующая тема",
-		CallbackData: "next",
+		CallbackData: "/next",
 	}
 
 	AllButtons := inlineKeyboardMarkup{[][]inlineKeyboardButton{{buttonNext}}}
