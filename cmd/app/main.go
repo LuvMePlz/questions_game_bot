@@ -14,7 +14,7 @@ import (
 var botToken string
 var topics map[int]string
 var topicsCount = 136
-var test map[int]int
+var test map[int]int = map[int]int{}
 
 // Create a struct that mimics the webhook response body
 // https://core.telegram.org/bots/api#update
