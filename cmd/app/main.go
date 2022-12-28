@@ -14,6 +14,7 @@ import (
 var botToken string
 var topics map[int]string
 var topicsCount = 136
+var test map[int]int
 
 // Create a struct that mimics the webhook response body
 // https://core.telegram.org/bots/api#update
@@ -79,6 +80,13 @@ func sendNewQuestion(chatID int64) error {
 }
 
 func main() {
+	_, exist := test[0]
+	if !exist {
+		test[0] = 9
+		fmt.Println("there is no value in memory")
+	} else {
+		fmt.Printf("got value in memory: %v", test[0])
+	}
 	readTopics()
 	botToken = os.Getenv("BOTTOKEN")
 	port := os.Getenv("PORT")
