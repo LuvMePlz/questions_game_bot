@@ -33,9 +33,7 @@ type webhookReqBody struct {
 				ID int64 `json:"id"`
 			} `json:"chat"`
 		} `json:"message"`
-		MessageId string `json:"inline_message_id"`
-		Chat      string `json:"chat_instance"`
-		Data      string `json:"data"`
+		Data string `json:"data"`
 	} `json:"callback_query"`
 }
 
@@ -67,12 +65,13 @@ func handler(res http.ResponseWriter, req *http.Request) {
 	}
 
 	var text = body.Message.Text
-	fmt.Println("text: ", text)
-	fmt.Println("chatId: ", body.Message.Chat.ID)
-	fmt.Println(body.Callback)
-
 	if strings.Contains(strings.ToLower(text), "/") {
 		handleCommands(body)
+	}
+
+	var callback = body.Callback.Data
+	if strings.Contains(strings.ToLower(callback), "/next") {
+		handleNextCommand(body.Callback.Message.Chat.ID)
 	}
 }
 
