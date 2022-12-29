@@ -56,6 +56,9 @@ func handler(res http.ResponseWriter, req *http.Request) {
 	}
 
 	var text = body.Message.Text
+	fmt.Println("text: ", text)
+	fmt.Println("chatId: ", body.Message.Chat.ID)
+
 	if strings.Contains(strings.ToLower(text), "/") {
 		handleCommands(body)
 	}
@@ -138,7 +141,7 @@ func send(chatID int64, text string, keyboard bool) error {
 func sendNewTopic(chatID int64) error {
 	var text = topics[rand.Intn(topicsCount)]
 	if err := send(chatID, text, true); err != nil {
-		fmt.Println("error in sending new topic reply command chatID: ", chatID, " | error: ", err)
+		fmt.Println("error in sending new topic reply command: ", err)
 		return err
 	}
 
