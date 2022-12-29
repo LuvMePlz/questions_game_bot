@@ -58,6 +58,7 @@ func handler(res http.ResponseWriter, req *http.Request) {
 	var text = body.Message.Text
 	fmt.Println("text: ", text)
 	fmt.Println("chatId: ", body.Message.Chat.ID)
+	fmt.Println(req.Body)
 
 	if strings.Contains(strings.ToLower(text), "/") {
 		handleCommands(body)
