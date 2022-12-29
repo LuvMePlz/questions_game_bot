@@ -26,6 +26,17 @@ type webhookReqBody struct {
 			ID int64 `json:"id"`
 		} `json:"chat"`
 	} `json:"message"`
+	Callback struct {
+		Message struct {
+			Text string `json:"text"`
+			Chat struct {
+				ID int64 `json:"id"`
+			} `json:"chat"`
+		} `json:"message"`
+		MessageId string `json:"inline_message_id"`
+		Chat      string `json:"chat_instance"`
+		Data      string `json:"data"`
+	} `json:"callback_query"`
 }
 
 type inlineKeyboardMarkup struct {
@@ -58,7 +69,7 @@ func handler(res http.ResponseWriter, req *http.Request) {
 	var text = body.Message.Text
 	fmt.Println("text: ", text)
 	fmt.Println("chatId: ", body.Message.Chat.ID)
-	fmt.Println(req.Body)
+	fmt.Println(body.Callback)
 
 	if strings.Contains(strings.ToLower(text), "/") {
 		handleCommands(body)
